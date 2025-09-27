@@ -1,255 +1,207 @@
 ---
-multi_symbol_data_processing:
+data_collection_and_validation:
   description: |-
-    Process and validate multiple stock symbols from the input {stock_symbols}. For each symbol:
-
-    1. **Symbol Validation**: Verify each symbol exists and has available data
-    2. **Data Quality Check**: Ensure sufficient data availability for analysis
-    3. **Accurate Sector Classification**: Use stock data to identify correct business sectors (Technology, Healthcare, Financial Services, Consumer Goods, Energy, Utilities, Real Estate, Telecommunications, Industrials, Materials, etc.)
-    4. **Company Profile Analysis**: Extract company description, industry, and business model
-    5. **Data Preprocessing**: Gather key data points for each symbol
-    6. **Batch Coordination**: Organize symbols for efficient parallel analysis
-
-    **Sector Classification Requirements**:
-    - Use company business description and industry codes
-    - Cross-reference multiple data sources for accuracy
-    - Handle edge cases (REITs, ETFs, specialized companies)
-    - Provide detailed sector breakdown for diversification analysis
+    Collect and validate market data for all symbols in {stock_symbols}. For each symbol:
+    
+    1. **Symbol Validation**: Verify symbol exists and has sufficient data
+    2. **Data Collection**: Gather comprehensive market data including:
+       - Current price, volume, market cap
+       - Historical prices (minimum 1 year for analysis)
+       - Basic fundamental metrics (P/E, EPS, Revenue)
+       - 52-week high/low ranges
+    3. **Data Quality Check**: Ensure data completeness and accuracy
+    4. **Sector Classification**: Identify business sectors for diversification analysis
+    5. **Batch Processing**: Organize data for efficient analysis workflow
+    
+    Focus on data reliability and completeness for downstream analysis.
   expected_output: |-
-    MULTI-SYMBOL PROCESSING REPORT
+    DATA COLLECTION REPORT
+    
+    Validated Symbols: [X] out of [Total]
+    
+    | Symbol | Status | Company | Sector | Data Quality | Price | Volume |
+    |--------|--------|---------|--------|--------------|-------|---------|
+    | AAPL | ✅ Valid | Apple Inc | Technology | Excellent | $150.25 | 45.2M |
+    | GOOGL | ✅ Valid | Alphabet | Technology | Excellent | $2,800.50 | 1.2M |
+    
+    Data Summary:
+    - Historical Data Range: [Start Date] to [End Date]
+    - Average Data Completeness: [X]%
+    - Sector Diversification: [X] sectors represented
+    - Ready for Analysis: [X] symbols
+    
+    Issues Found: [List any data problems]
+    Recommended Processing Order: [Sequence for optimal analysis]
+  agent: market_data_analyst
 
-    Validated Symbols: [Number] out of [Total] symbols processed
-
-    Symbol Analysis Status:
-    | Symbol | Status | Company Name | Sector | Industry | Data Quality | Notes |
-    |--------|---------|--------------|--------|----------|--------------|-------|
-    | AAPL | ✅ Valid | Apple Inc | Technology | Consumer Electronics | Excellent | Ready for analysis |
-    | T | ✅ Valid | AT&T Inc | Telecommunications | Wireless Services | Excellent | Ready for analysis |
-    | [Others] | [Status] | [Name] | [Sector] | [Industry] | [Quality] | [Notes] |
-
-    Sector Distribution:
-    - Technology: [X] symbols ([%])
-    - Telecommunications: [X] symbols ([%])
-    - [Other sectors]: [X] symbols ([%])
-
-    Invalid/Problematic Symbols: [List with reasons]
-    Recommended Analysis Order: [Sequence for optimal processing]
-    Diversification Notes: [Sector concentration risks and opportunities]
-  agent: multi_symbol_coordinator
-short_term_technical_analysis:
-  description: "Perform specialized short-term technical analysis for {stock_symbol}
-    focusing on {analysis_timeframe} day timeframe (≤31 days). Analyze:\n\n**Short-Term
-    Technical Indicators**:\n- **Intraday Momentum**: RSI (14-period), Stochastic
-    oscillators\n- **Short-Term Moving Averages**: 5-day, 10-day, 20-day crossovers
-    \ \n- **Volume Analysis**: Unusual volume spikes, VWAP deviation\n- **Price Action**:
-    Recent support/resistance, breakout patterns\n- **Momentum Catalysts**: News events,
-    earnings proximity, technical patterns\n\n**Short-Term Score Calculation (0-100)**:\n-
-    Intraday momentum: 35 points (strong momentum signals)\n- Short-term MA signals:
-    25 points (5/10/20 day alignment)\n- Volume confirmation: 25 points (volume supporting
-    price moves)\n- Pattern recognition: 15 points (short-term breakouts/reversals)\n\n**Focus
-    on short-term trading opportunities and immediate price drivers.**"
-  expected_output: "SHORT-TERM TECHNICAL ANALYSIS ({analysis_timeframe} days)\n\nScore:
-    [X]/100\nRecommendation: BUY/SELL/HOLD\nTimeframe: {analysis_timeframe} days\nConfidence:
-    [X]%\n\nKey Short-Term Indicators:\n1. Intraday Momentum: [RSI and Stochastic
-    readings]\n2. Short MA Analysis: [5/10/20-day alignment]  \n3. Volume Patterns:
-    [Recent volume and VWAP analysis]\n4. Price Action: [Key short-term levels and
-    patterns]\n5. Catalysts: [Events affecting near-term price]\n\nEntry/Exit Levels:\n-
-    Entry: $[X.XX] \n- Stop-Loss: $[X.XX]\n- Target: $[X.XX] \n- Time Horizon: [X]
-    days\n\nShort-Term Risks: [Immediate risks and pattern failure points]"
-  agent: short_term_technical_analyst
-  context:
-  - multi_symbol_data_processing
-technical_analysis:
-  description: "Perform comprehensive technical analysis on {stock_symbol} using the
-    StockDataTool. Focus on analyzing:\n\n**Key Technical Indicators**:\n- RSI levels
-    and momentum signals\n- MACD signals and divergences  \n- Moving averages (20,
-    50, 200-day) and trend analysis\n- Support/resistance levels from price action\n-
-    Volume analysis and price/volume relationships\n\n**Technical Score Calculation
-    (0-100)**:\n- RSI: 30 points (oversold >70=bullish, <30=bearish, 30-70=neutral)\n-
-    MACD: 25 points (positive signal=bullish, negative=bearish)\n- Moving averages:
-    25 points (price above MAs=bullish)\n- Volume: 20 points (high volume on moves=strong
-    signal)\n\n**Output Format**: Clearly state your technical score, recommendation
-    rationale, and key technical points."
-  expected_output: "TECHNICAL ANALYSIS REPORT\n\nScore: [X]/100\nRecommendation: BUY/SELL/HOLD\nConfidence:
-    [X]%\n\nKey Technical Indicators:\n1. RSI Analysis: [Signal and current level]\n2.
-    MACD Analysis: [Trend and signal]\n3. Moving Averages: [20/50/200-day trend analysis]
-    \n4. Support/Resistance: [Key levels]\n5. Volume Analysis: [Volume pattern assessment]\n\nRisk
-    Warnings: [Technical failure points or reversal risks]\nOutlook: [Technical direction
-    and key levels to monitor]"
-  agent: technical_analysis_specialist
-  context:
-  - multi_symbol_data_processing
-fundamental_analysis:
-  description: "Conduct thorough fundamental analysis of {stock_symbol} using StockDataTool
-    data. Analyze:\n\n**Key Fundamental Metrics**:\n- P/E ratio and valuation assessment
-    vs sector average\n- Market cap and company size classification  \n- Revenue growth
-    trends and business momentum\n- ROE and profitability metrics\n- Debt ratios and
-    financial health indicators\n\n**Fundamental Score Calculation (0-100)**:\n- Valuation
-    (P/E): 25 points (reasonable P/E=bullish, high P/E=bearish)\n- Growth metrics:
-    25 points (positive growth=bullish)\n- Financial health: 25 points (strong ratios=bullish)\n-
-    Market position: 25 points (large cap stability, growth potential)\n\n**Output
-    Format**: Provide clear fundamental score, investment thesis, and financial strengths/weaknesses."
+comprehensive_technical_analysis:
+  description: |-
+    Perform complete technical analysis for each symbol covering both short-term ({analysis_timeframe} days) and long-term timeframes:
+    
+    **Short-Term Analysis** (≤31 days):
+    - Intraday momentum: RSI(14), Stochastic
+    - Short MA signals: 5, 10, 20-day crossovers
+    - Volume patterns and VWAP analysis
+    - Immediate support/resistance levels
+    
+    **Long-Term Analysis** (>31 days):
+    - Trend analysis: 50, 200-day moving averages
+    - MACD signals and divergences
+    - Long-term support/resistance zones
+    - Price pattern recognition
+    
+    **Technical Scoring** (0-100):
+    - Short-term signals: 40 points
+    - Long-term trend: 35 points  
+    - Volume confirmation: 25 points
+    
+    Provide unified technical recommendation with entry/exit levels.
   expected_output: |-
-    FUNDAMENTAL ANALYSIS REPORT
+    COMPREHENSIVE TECHNICAL ANALYSIS
+    
+    **[SYMBOL]** - Technical Score: [X]/100
+    Recommendation: BUY/SELL/HOLD | Confidence: [X]%
+    Timeframe Bias: Short-term [Bullish/Bearish] | Long-term [Bullish/Bearish]
+    
+    **Short-Term Signals** ([X]/40 points):
+    - RSI(14): [X] ([Oversold/Neutral/Overbought])
+    - MA Alignment: [5/10/20-day status]
+    - Volume: [Above/Below average - confirmation strength]
+    
+    **Long-Term Trend** ([X]/35 points):
+    - 50/200 MA: [Golden Cross/Death Cross/Neutral]
+    - MACD: [Signal and histogram status]
+    - Primary Trend: [Uptrend/Downtrend/Sideways]
+    
+    **Key Levels**:
+    - Entry: $[X.XX] | Stop-Loss: $[X.XX] | Target: $[X.XX]
+    - Support: $[X.XX] | Resistance: $[X.XX]
+    
+    **Risk Warning**: [Primary technical risks]
+    
+    [Repeat for each symbol]
+  agent: technical_analyst
+  context: 
+    - data_collection_and_validation
 
-    Score: [X]/100
-    Recommendation: BUY/SELL/HOLD
-    Investment Thesis: [Clear 2-3 sentence summary]
-
-    Key Fundamental Metrics:
-    1. Valuation: [P/E ratio and market cap assessment]
-    2. Growth: [Revenue and earnings trends]
-    3. Financial Health: [ROE and debt metrics]
-    4. Business Quality: [Market position and competitive advantages]
-    5. Fair Value: [Estimated intrinsic value]
-
-    Investment Warnings: [Financial risks and overvaluation concerns]
-    Outlook: [Long-term business prospects and key drivers]
-  agent: fundamental_analysis_specialist
-  context:
-  - multi_symbol_data_processing
-sentiment_analysis:
-  description: Analyze market sentiment for {stock_symbol} using available sentiment
-    data from StockDataTool. Evaluate news sentiment, social sentiment, analyst ratings,
-    and institutional ownership patterns. Assess how current sentiment might impact
-    price movements and identify sentiment extremes that could signal reversals.
+integrated_fundamental_and_risk_analysis:
+  description: |-
+    Perform comprehensive fundamental analysis integrated with risk assessment for each symbol:
+    
+    **Fundamental Analysis**:
+    - Valuation: P/E ratio vs sector average, Price-to-Book
+    - Growth: Revenue growth, EPS growth trends  
+    - Financial Health: ROE, Debt-to-Equity, Current Ratio
+    - Market Position: Market cap classification, competitive moat
+    
+    **Risk Assessment**:
+    - Volatility Analysis: 30-day, 90-day price volatility
+    - Beta Calculation: Market correlation and sensitivity
+    - Liquidity Risk: Average volume, bid-ask spreads
+    - Financial Stability: Debt levels, cash flow strength
+    
+    **Integrated Scoring**:
+    - Fundamental Score: 0-100 (higher = better value/growth)
+    - Risk Score: 0-100 (higher = more risky)
+    - Risk-Adjusted Score: Fundamental score adjusted for risk level
+    
+    Focus on identifying value opportunities while quantifying associated risks.
   expected_output: |-
-    SENTIMENT ANALYSIS REPORT
+    FUNDAMENTAL & RISK ANALYSIS
+    
+    **[SYMBOL]** 
+    Fundamental Score: [X]/100 | Risk Score: [Y]/100 | Risk Level: [LOW/MED/HIGH]
+    Recommendation: BUY/SELL/HOLD | Risk-Adjusted Score: [Z]/100
+    
+    **Valuation Metrics**:
+    - P/E Ratio: [X.X] vs Sector Avg: [Y.Y] ([Over/Under]valued)
+    - Market Cap: $[X]B ([Large/Mid/Small] Cap)
+    - Price-to-Book: [X.X] ([Premium/Discount] to book value)
+    
+    **Growth & Quality**:
+    - Revenue Growth: [X]% (trailing 12M)
+    - EPS Growth: [X]% (year-over-year)  
+    - ROE: [X]% ([Strong/Weak] profitability)
+    - Debt/Equity: [X.X] ([Conservative/Aggressive] leverage)
+    
+    **Risk Profile**:
+    - 30-day Volatility: [X]% | 90-day Volatility: [Y]%
+    - Beta: [X.X] ([More/Less] volatile than market)
+    - Liquidity: [High/Medium/Low] (Volume: [X]M avg daily)
+    - Financial Stability: [Strong/Moderate/Weak]
+    
+    **Investment Thesis**: [2-3 sentence summary]
+    **Primary Risk**: [Main risk factor]
+    **Position Sizing**: Max [X]% allocation (based on risk level)
+    
+    [Repeat for each symbol]
+  agent: fundamental_analyst
+  context:
+    - data_collection_and_validation
 
-    Score: [X]/100
-    Recommendation: BUY/SELL/HOLD
-    Summary: [Overall market sentiment assessment]
-
-    Key Sentiment Indicators:
-    1. News Sentiment: [Positive/negative/neutral trends]
-    2. Social Sentiment: [Retail investor mood]
-    3. Analyst Ratings: [Institutional outlook]
-    4. Institutional Activity: [Smart money positioning]
-    5. Market Psychology: [Overall investor behavior]
-
-    Sentiment Warnings: [Contrarian signals and extreme readings]
-    Impact: [How sentiment may affect price movements]
-  agent: market_sentiment_analyst
+portfolio_optimization_and_allocation:
+  description: |-
+    Create optimized portfolio allocation using strict risk-discipline framework:
+    
+    **MANDATORY THRESHOLDS**:
+    - BUY: Combined Score ≥75 AND Risk ≤60
+    - HOLD: Combined Score 60-74 OR (Score ≥75 AND Risk 61-70)  
+    - SELL: Combined Score <60 OR Risk >70
+    
+    **ALLOCATION LIMITS**:
+    - High Risk (71-100): 0% allocation (excluded)
+    - Medium-High Risk (61-70): Max 5% allocation
+    - Medium Risk (41-60): Max 10% allocation
+    - Low Risk (0-40): Up to 20% allocation
+    
+    **Portfolio Construction**:
+    1. Exclude all SELL recommendations and high-risk positions
+    2. Calculate combined scores (Technical 40% + Fundamental 35% + Risk Adjustment 25%)
+    3. Apply sector diversification (max 40% per sector)
+    4. Optimize risk-adjusted returns within allocation limits
+    5. Include backtesting validation for strategy confidence
+    
+    **Backtesting Requirement**: 
+    Test the recommended allocations against 1-year historical data to validate strategy performance.
+  expected_output: |-
+    PORTFOLIO OPTIMIZATION REPORT
+    
+    **RECOMMENDED PORTFOLIO ALLOCATION** (Total: 100%)
+    
+    | Symbol | Combined Score | Risk Level | Allocation | Entry Price | Target | Stop Loss |
+    |---------|---------------|------------|------------|-------------|---------|-----------|
+    | [SYM1] | [X]/100 | LOW ([Y]) | [Z]% | $[A] | $[B] | $[C] |
+    | [SYM2] | [X]/100 | MED ([Y]) | [Z]% | $[A] | $[B] | $[C] |
+    
+    **EXCLUDED POSITIONS**:
+    | Symbol | Reason | Score | Risk |
+    |---------|---------|--------|------|
+    | [SYM] | High Risk | [X]/100 | [Y]/100 |
+    | [SYM] | Low Score | [X]/100 | [Y]/100 |
+    
+    **PORTFOLIO METRICS**:
+    - Portfolio Risk Level: [LOW/MEDIUM/HIGH]
+    - Expected Annual Return: [X]% (based on analysis)
+    - Maximum Drawdown Risk: [X]%
+    - Sector Diversification: [X] sectors
+    - Largest Position: [X]% ([Symbol])
+    
+    **BACKTESTING RESULTS** (1-Year Historical):
+    - Strategy Return: [X]% vs S&P 500: [Y]%
+    - Win Rate: [X]% of positions
+    - Average Gain: [X]% | Average Loss: [Y]%
+    - Maximum Drawdown: [X]%
+    - Sharpe Ratio: [X.X]
+    
+    **IMPLEMENTATION PLAN**:
+    1. **Immediate Action**: Buy [Symbol] ([X]% allocation)
+    2. **Monitor Entry**: [Symbol] - waiting for entry at $[X]
+    3. **Risk Management**: Set stop losses at specified levels
+    4. **Review Schedule**: Weekly technical review, monthly fundamental review
+    
+    **EXECUTIVE SUMMARY**: 
+    [3-sentence summary of top opportunity, risk management approach, and expected outcome]
+  agent: portfolio_manager
   context:
-  - multi_symbol_data_processing
-risk_assessment:
-  description: "Conduct comprehensive risk assessment for {stock_symbol} using StockDataTool
-    data. Analyze volatility metrics, price range patterns, and risk indicators with
-    enhanced consistency rules.\n\n**Enhanced Risk Scoring Framework (0-100 scale,
-    higher = more risky)**:\n\n**Volatility Component (35 points)**:\n- Daily volatility
-    <15%: 5-10 points (low risk)\n- Daily volatility 15-25%: 15-20 points (medium
-    risk)  \n- Daily volatility >25%: 25-35 points (high risk)\n\n**Beta Component
-    (25 points)**:\n- Beta <0.8: 5 points (defensive)\n- Beta 0.8-1.2: 10-15 points
-    (market risk)\n- Beta >1.2: 20-25 points (high sensitivity)\n\n**Financial Stability
-    (25 points)**:\n- Strong balance sheet, low debt: 5 points\n- Moderate leverage:
-    10-15 points\n- High debt, weak financials: 20-25 points\n\n**Liquidity Risk (15
-    points)**:\n- High volume, tight spreads: 2 points\n- Moderate liquidity: 5-8
-    points  \n- Low volume, wide spreads: 10-15 points\n\n**Consistency Rules**:\n-
-    Risk score must align with recommendation confidence\n- Higher risk = Lower position
-    size recommendation\n- Document specific risk factors driving the score\n- Cross-validate
-    with technical and fundamental findings"
-  expected_output: "RISK ASSESSMENT REPORT\n\n**Risk Score**: [X]/100 (Volatility:
-    [Y] + Beta: [Z] + Financial: [A] + Liquidity: [B])\n**Risk Level**: LOW (0-40)
-    / MEDIUM (41-70) / HIGH (71-100)\n**Risk-Adjusted Recommendation**: [Clear guidance
-    on position sizing]\n\nDETAILED RISK BREAKDOWN\n1. **Volatility Analysis**: [Score]/35
-    - [Daily/weekly price swing analysis]\n   - 30-day volatility: [X]%\n   - 90-day
-    volatility: [Y]%\n   - Volatility trend: Increasing/Stable/Decreasing\n\n2. **Beta
-    Analysis**: [Score]/25 - [Market correlation and sensitivity]\n   - Current beta:
-    [X.XX]\n   - Risk vs market: Lower/Similar/Higher\n   - Sector beta comparison:
-    [Analysis]\n\n3. **Financial Stability**: [Score]/25 - [Balance sheet and debt
-    analysis]  \n   - Debt-to-equity ratio: [X.XX]\n   - Current ratio: [X.XX]\n   -
-    Credit rating: [Rating or analysis]\n\n4. **Liquidity Risk**: [Score]/15 - [Trading
-    volume and spread analysis]\n   - Average daily volume: [X.X]M shares\n   - Bid-ask
-    spread: [X.XX]%\n   - Market depth: Excellent/Good/Limited\n\nPOSITION SIZING
-    GUIDANCE\n**Recommended Allocation**: [X]% of portfolio (max)\n- LOW risk (0-40):
-    Up to 8-12% position\n- MEDIUM risk (41-70): 3-7% position  \n- HIGH risk (71-100):
-    1-3% position maximum\n\nCRITICAL RISK FACTORS\n1. [Primary risk with quantified
-    impact]\n2. [Secondary risk with probability assessment]\n3. [Tail risk or extreme
-    scenario consideration]\n\nRISK MANAGEMENT STRATEGY\n- **Stop-Loss Level**: [X]%
-    below entry ([Specific price])\n- **Position Scaling**: [Entry strategy based
-    on risk level]\n- **Monitoring Triggers**: [Key metrics to watch for risk changes]\n-
-    **Exit Strategy**: [Risk-based exit criteria]"
-  agent: risk_management_specialist
-  context:
-  - multi_symbol_data_processing
-master_stock_analysis:
-  description: "**MANDATORY THRESHOLD ENFORCEMENT**: Synthesize all analyses with
-    **STRICT BUY/SELL/HOLD CRITERIA**\n\n**NON-NEGOTIABLE RECOMMENDATION THRESHOLDS:**\n-
-    **BUY**: Overall Score ≥75 AND Risk ≤60\n- **HOLD**: Overall Score 60-74 OR (Score
-    ≥75 AND Risk 61-75)  \n- **SELL**: Overall Score <60 OR Risk >75\n\n**RISK OVERRIDE
-    RULES:**\n- Risk >75 = **MANDATORY SELL** (regardless of other scores)\n- Score
-    <60 = **MANDATORY SELL** (regardless of risk level)\n- **NO EXCEPTIONS** - these
-    are hard thresholds\n\n**SYNTHESIS REQUIREMENTS:**\n1. **Quote specific scores**
-    from each analysis\n2. **Calculate weighted overall score** (Tech: 25%, Fund:
-    30%, Sentiment: 15%, Risk: 15%, Short-Term: 15%)\n3. **Apply mandatory thresholds**
-    - no subjective overrides\n4. **Risk-adjust confidence** based on risk score\n5.
-    **Generate SELL recommendations** when thresholds triggered\n6. **Show threshold
-    logic** in recommendation rationale"
-  expected_output: "**\U0001F50D COMPREHENSIVE ANALYSIS: {stock_symbol}**\n\n**⚡ FINAL
-    RECOMMENDATION**\n**Overall Score**: [X]/100 (Tech: [A] × 25% + Fund: [B] × 30%
-    + Sent: [C] × 15% + Risk: [D] × 15% + Short: [E] × 15%)\n**Risk Score**: [Y]/100
-    (**[LOW/MED/HIGH] RISK**)\n**Recommendation**: **[BUY/SELL/HOLD]** | **Confidence**:
-    [X]%\n**Threshold Logic**: [Score ≥75 AND Risk ≤60 = BUY] OR [Score <60 OR Risk
-    >75 = SELL]\n\n**\U0001F3AF KEY METRICS**\n• **Target Price**: $[X.XX] | **Stop-Loss**:
-    $[X.XX]\n• **Entry Point**: $[X.XX] | **Risk-Reward**: 1:[X]\n• **Position Sizing**:
-    [X]% max (based on risk score)\n\n**\U0001F4CA ANALYSIS BREAKDOWN**\n• **Technical**
-    ([A]/100): [One key finding]\n• **Fundamental** ([B]/100): [One key finding]  \n•
-    **Sentiment** ([C]/100): [One key finding]\n• **Risk** ([D]/100): [Primary risk
-    factor]\n• **Short-Term** ([E]/100): [Entry timing and target]\n\n**⚠️ RISK MANAGEMENT**\n**Risk
-    Level**: [LOW/MED/HIGH] ([Risk Score]/100)\n**Max Allocation**: [X]% (Risk-based
-    position limit)\n**Critical Risk**: [Main risk factor driving score]\n**Risk Controls**:
-    [Stop-loss and risk management strategy]\n\n**\U0001F4C8 STRENGTHS** (Top 3)\n1.
-    [Key strength]\n2. [Key strength]  \n3. [Key strength]\n\n**⚠️ RISKS** (Top 3)\n1.
-    [Primary risk with score impact]\n2. [Secondary risk]\n3. [Risk management concern]\n\n**\U0001F4A1
-    EXECUTIVE SUMMARY**\n[2-3 sentences: Clear recommendation rationale based on threshold
-    logic, key risk factors, and optimal execution strategy]"
-  agent: master_stock_orchestrator
-  context:
-  - technical_analysis
-  - fundamental_analysis
-  - sentiment_analysis
-  - risk_assessment
-  - short_term_technical_analysis
-multi_symbol_comparative_analysis:
-  description: "**STRICT PORTFOLIO LOGIC IMPLEMENTATION**: Generate focused comparative
-    analysis with **ZERO TOLERANCE** for risk-allocation inconsistencies.\n\n**CRITICAL
-    RULES (NON-NEGOTIABLE):**\n\n**1. MANDATORY BUY/SELL/HOLD THRESHOLDS:**\n- **BUY**:
-    Overall Score ≥75 AND Risk ≤60 \n- **HOLD**: Overall Score 60-74 OR (Score ≥75
-    AND Risk 61-75)\n- **SELL**: Overall Score <60 OR Risk >75\n\n**2. STRICT ALLOCATION
-    LIMITS:**\n- **HIGH RISK (76-100)**: 0% allocation (AUTOMATIC EXCLUSION)\n- **MEDIUM-HIGH
-    RISK (61-75)**: Maximum 3% allocation\n- **MEDIUM RISK (41-60)**: Maximum 8% allocation
-    \ \n- **LOW RISK (0-40)**: Up to 15% allocation\n\n**3. PORTFOLIO CONSTRUCTION
-    SEQUENCE:**\n   a) **EXCLUDE**: All SELL recommendations (0% allocation)\n   b)
-    **EXCLUDE**: All positions with Risk >75 (0% allocation)\n   c) **ALLOCATE**:
-    Remaining 100% among qualified BUY/HOLD only\n   d) **WEIGHT**: By conviction
-    score × risk adjustment factor\n\n**4. RISK-SCORE ENFORCEMENT:**\n- Risk score
-    >75 = MANDATORY 0% allocation (no exceptions)\n- Risk score 61-75 = Maximum 3%
-    (reduce allocation significantly)\n- Risk score 41-60 = Standard allocation up
-    to 8%\n- Risk score ≤40 = Full allocation potential\n\n**5. CONCISE REPORTING
-    REQUIREMENTS:**\n- **Remove verbose explanations** - focus on key metrics only\n-
-    **Show clear calculations** for allocation logic\n- **Highlight risk-allocation
-    enforcement**\n- **Maximum 2 paragraphs per symbol summary**\n- **Eliminate redundant
-    sections**"
-  expected_output: "**\U0001F4CA MULTI-SYMBOL ANALYSIS REPORT**\n\n**\U0001F3C6 SYMBOL
-    RANKINGS**\n| Rank | Symbol | Score | Risk | Rec | Allocation | Rationale |\n|------|--------|-------|------|-----|------------|-----------|\n|
-    1 | [SYM] | [X]/100 | [Y]/100 | BUY | [Z]% | [Brief reason] |\n| 2 | [SYM] | [X]/100
-    | [Y]/100 | HOLD | [Z]% | [Brief reason] |\n| 3 | [SYM] | [X]/100 | [Y]/100 |
-    SELL | 0% | [Risk >75 OR Score <60] |\n\n**\U0001F4C8 INDIVIDUAL SCORES**\n**[SYMBOL
-    1]**: [X]/100 | Risk: [Y]/100 ([LOW/MED/HIGH])\n• Tech: [A] | Fund: [B] | Sent:
-    [C] | Short: [D]\n• **Entry**: $[X.XX] | **Target**: $[X.XX] | **Stop**: $[X.XX]\n•
-    **Key Strength**: [One line]\n• **Key Risk**: [One line]\n\n**\U0001F4BC PORTFOLIO
-    ALLOCATION** (Total: 100%)\n**✅ ALLOCATED POSITIONS:**\n• [BUY Symbol]: **[X]%**
-    - [Score]/100, Risk [Y]/100 - [Brief rationale]\n• [HOLD Symbol]: **[X]%** - [Score]/100,
-    Risk [Y]/100 - [Brief rationale]\n\n**❌ EXCLUDED POSITIONS:**\n• [SELL Symbol]:
-    **0%** - [Reason: Score <60 OR Risk >75]\n• [HIGH RISK Symbol]: **0%** - [Risk
-    >75 = Auto-exclusion]\n\n**\U0001F3AF ACTION PRIORITIES**\n**IMMEDIATE BUY**:
-    [Symbol] at $[X.XX] ([X]% allocation)\n**MONITOR**: [Symbol] - Watch for entry
-    at $[X.XX]\n**EXIT/AVOID**: [Symbol] - [Risk level] prevents allocation\n\n**⚖️
-    RISK VALIDATION**\n• **Portfolio Risk Level**: [LOW/MED/HIGH]\n• **Risk Limit
-    Compliance**: ✅ No position >3% if Risk >60\n• **Allocation Logic**: ✅ High-risk
-    positions excluded\n• **Sector Diversification**: [X] sectors represented\n\n**\U0001F4CB
-    EXECUTIVE SUMMARY**\n[Maximum 3 sentences: Top opportunity, key risk management,
-    immediate action]"
-  agent: multi_symbol_report_generator
-  context:
-  - master_stock_analysis
+    - comprehensive_technical_analysis  
+    - integrated_fundamental_and_risk_analysis
