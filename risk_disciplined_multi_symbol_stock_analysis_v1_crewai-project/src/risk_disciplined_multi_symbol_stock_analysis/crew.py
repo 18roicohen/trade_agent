@@ -1,307 +1,114 @@
 import os
-
 from crewai import LLM
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 
-from risk_disciplined_multi_symbol_stock_analysis.tools.stock_data_tool import StockDataTool
-
-
-
-
+# Import real tools instead of fake ones
+from risk_disciplined_multi_symbol_stock_analysis.tools.real_stock_data_tool import RealStockDataTool
+from risk_disciplined_multi_symbol_stock_analysis.tools.backtesting_tool import BacktestingTool
 
 @CrewBase
-class RiskDisciplinedMultiSymbolStockAnalysisCrew:
-    """RiskDisciplinedMultiSymbolStockAnalysis crew"""
+class SimplifiedStockAnalysisCrew:
+    """Simplified, efficient 4-agent stock analysis crew"""
 
-    
     @agent
-    def technical_analysis_specialist(self) -> Agent:
-
-        
+    def market_data_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config["technical_analysis_specialist"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
+            config=self.agents_config["market_data_analyst"],
+            tools=[RealStockDataTool()],
             reasoning=False,
-            max_reasoning_attempts=None,
             inject_date=True,
             allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
+            max_iter=15,  # Reduced iterations for efficiency
             llm=LLM(
-                model="gemini/gemini-2.0-flash-thinking-exp",
-                temperature=0.7,
+                model="gpt-4o-mini",  # Consistent model across all agents
+                temperature=0.3,  # Lower temperature for data analysis
             ),
-            
         )
     
     @agent
-    def fundamental_analysis_specialist(self) -> Agent:
-
-        
+    def technical_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config["fundamental_analysis_specialist"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
+            config=self.agents_config["technical_analyst"],
+            tools=[RealStockDataTool()],
             reasoning=False,
-            max_reasoning_attempts=None,
             inject_date=True,
             allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
+            max_iter=20,
             llm=LLM(
                 model="gpt-4o-mini",
-                temperature=0.7,
+                temperature=0.4,  # Slightly higher for pattern recognition
             ),
-            
         )
     
     @agent
-    def market_sentiment_analyst(self) -> Agent:
-
-        
+    def fundamental_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config["market_sentiment_analyst"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
+            config=self.agents_config["fundamental_analyst"],
+            tools=[RealStockDataTool()],
             reasoning=False,
-            max_reasoning_attempts=None,
             inject_date=True,
             allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
+            max_iter=20,
             llm=LLM(
                 model="gpt-4o-mini",
-                temperature=0.7,
+                temperature=0.3,  # Low temperature for numerical analysis
             ),
-            
         )
     
     @agent
-    def risk_management_specialist(self) -> Agent:
-
-        
+    def portfolio_manager(self) -> Agent:
         return Agent(
-            config=self.agents_config["risk_management_specialist"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
+            config=self.agents_config["portfolio_manager"],
+            tools=[BacktestingTool()],  # Portfolio manager gets backtesting tool
             reasoning=False,
-            max_reasoning_attempts=None,
             inject_date=True,
             allow_delegation=False,
             max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
             llm=LLM(
                 model="gpt-4o-mini",
-                temperature=0.7,
+                temperature=0.2,  # Very low temperature for risk management
             ),
-            
         )
-    
-    @agent
-    def master_stock_orchestrator(self) -> Agent:
 
-        
-        return Agent(
-            config=self.agents_config["master_stock_orchestrator"],
-            
-            
-            tools=[
-
-            ],
-            reasoning=False,
-            max_reasoning_attempts=None,
-            inject_date=True,
-            allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
-            llm=LLM(
-                model="gpt-4o-mini",
-                temperature=0.7,
-            ),
-            
-        )
-    
-    @agent
-    def multi_symbol_coordinator(self) -> Agent:
-
-        
-        return Agent(
-            config=self.agents_config["multi_symbol_coordinator"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
-            reasoning=False,
-            max_reasoning_attempts=None,
-            inject_date=True,
-            allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
-            llm=LLM(
-                model="gpt-4o-mini",
-                temperature=0.7,
-            ),
-            
-        )
-    
-    @agent
-    def short_term_technical_analyst(self) -> Agent:
-
-        
-        return Agent(
-            config=self.agents_config["short_term_technical_analyst"],
-            
-            
-            tools=[
-				StockDataTool()
-            ],
-            reasoning=False,
-            max_reasoning_attempts=None,
-            inject_date=True,
-            allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
-            llm=LLM(
-                model="gpt-4o-mini",
-                temperature=0.7,
-            ),
-            
-        )
-    
-    @agent
-    def multi_symbol_report_generator(self) -> Agent:
-
-        
-        return Agent(
-            config=self.agents_config["multi_symbol_report_generator"],
-            
-            
-            tools=[
-
-            ],
-            reasoning=False,
-            max_reasoning_attempts=None,
-            inject_date=True,
-            allow_delegation=False,
-            max_iter=25,
-            max_rpm=None,
-            max_execution_time=None,
-            llm=LLM(
-                model="gpt-4o-mini",
-                temperature=0.7,
-            ),
-            
-        )
-    
-
-    
     @task
-    def multi_symbol_data_processing(self) -> Task:
+    def data_collection_and_validation(self) -> Task:
         return Task(
-            config=self.tasks_config["multi_symbol_data_processing"],
+            config=self.tasks_config["data_collection_and_validation"],
             markdown=False,
-            
-            
         )
     
     @task
-    def short_term_technical_analysis(self) -> Task:
+    def comprehensive_technical_analysis(self) -> Task:
         return Task(
-            config=self.tasks_config["short_term_technical_analysis"],
+            config=self.tasks_config["comprehensive_technical_analysis"],
             markdown=False,
-            
-            
         )
     
     @task
-    def technical_analysis(self) -> Task:
+    def integrated_fundamental_and_risk_analysis(self) -> Task:
         return Task(
-            config=self.tasks_config["technical_analysis"],
+            config=self.tasks_config["integrated_fundamental_and_risk_analysis"],
             markdown=False,
-            
-            
         )
     
     @task
-    def fundamental_analysis(self) -> Task:
+    def portfolio_optimization_and_allocation(self) -> Task:
         return Task(
-            config=self.tasks_config["fundamental_analysis"],
+            config=self.tasks_config["portfolio_optimization_and_allocation"],
             markdown=False,
-            
-            
         )
-    
-    @task
-    def sentiment_analysis(self) -> Task:
-        return Task(
-            config=self.tasks_config["sentiment_analysis"],
-            markdown=False,
-            
-            
-        )
-    
-    @task
-    def risk_assessment(self) -> Task:
-        return Task(
-            config=self.tasks_config["risk_assessment"],
-            markdown=False,
-            
-            
-        )
-    
-    @task
-    def master_stock_analysis(self) -> Task:
-        return Task(
-            config=self.tasks_config["master_stock_analysis"],
-            markdown=False,
-            
-            
-        )
-    
-    @task
-    def multi_symbol_comparative_analysis(self) -> Task:
-        return Task(
-            config=self.tasks_config["multi_symbol_comparative_analysis"],
-            markdown=False,
-            
-            
-        )
-    
 
     @crew
     def crew(self) -> Crew:
-        """Creates the RiskDisciplinedMultiSymbolStockAnalysis crew"""
+        """Creates the simplified, efficient stock analysis crew"""
         return Crew(
-            agents=self.agents,  # Automatically created by the @agent decorator
-            tasks=self.tasks,  # Automatically created by the @task decorator
+            agents=self.agents,
+            tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
+            # Optional: Add memory for better context retention
+            memory=True,
+            # Optional: Add planning for better task coordination  
+            planning=True,
         )
-
-    def _load_response_format(self, name):
-        with open(os.path.join(self.base_directory, "config", f"{name}.json")) as f:
-            json_schema = json.loads(f.read())
-
-        return SchemaConverter.build(json_schema)
